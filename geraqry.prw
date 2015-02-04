@@ -27,7 +27,7 @@ User Function geraqry()
 	Local nHandJob
 	Private cPath := "C:\TEMP\CARGA\"  //Diretório onde os arquivos serão salvos
 
-  	PREPARE ENVIRONMENT EMPRESA "99" FILIAL "01" TABLES "SIX","SX2","SX3"
+  	PREPARE ENVIRONMENT EMPRESA "99" FILIAL "01" TABLES "SIX","SX2","SX3" //Prepara a conexão com o dicionário de dados da empresa e filial especificada
 	    cEmpOri  := "090"
 	    If !(ExistDir(cPath))		//Rotina para verificar se o diretório existe, se não existir será criado
 			cTempPath := cPath
