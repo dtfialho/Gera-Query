@@ -1,5 +1,5 @@
 # Gera-Query
-Gerador de querys usando a linguagem ADVPL para copiar dados de uma tabela para outra baseada no dicionário de dados do protheus.
+Gerador de querys usando a linguagem ADVPL para copiar dados de uma tabela para outra baseado no dicionário de dados do protheus.
 
 Para realizar a rotina basta alterar a lista das tabelas que serão clonadas e o código da empresa de destino que pode ser uma ou mais.
 Feito isso é necessário alterar também o código da empresa de origem e adicionar a path onde os arquivos serão salvos.
