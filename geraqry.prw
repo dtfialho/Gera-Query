@@ -4,8 +4,8 @@
 ±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
 ±±ºPrograma  ³GERAQRY V1.3 º Autor Diego T. Fialho   º Data ³  02/04/15   º±±
 ±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
-±±ºDesc.     ³ Programa para clonar dados de uma tabela para outra        º±±
-±±º          ³                                                            º±±   
+±±ºDesc.     ³ Programa para gerar uma query para copiar dados de uma     º±±
+±±º          ³ para outra.                                                º±±   
 ±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
 ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
@@ -17,46 +17,48 @@
 #INCLUDE "TOPCONN.CH"
 
 User Function geraqry()  
-	Local aLstTabela := {"ACY","CN0","CN1","CN5","CNK","CNL","CT8","CTA","DA0","DA1","DA3","SA3","SA4",;  	  //Array com as tabelas que serão copiadas
-	                     "SA6","SAH","SB1","SBM","SE4","SED","SES","SF4","SF5","SF7","SG1","SG5","SM4","SU5",;
-	                     "SA2","CT1","CT5","CTS","CVN","CTN","CVE","CVF"}
-	
-	Local cEmpDest := {"130"} //Empresa(s) destino
-	Local cEmpOri             //Empresa de origem
-	Local nEmpInd,nTabInd
-	Local nHandJob
-	Private cPath := "C:\TEMP\CARGA\"  //Diretório onde os arquivos serão salvos
+Local aLstTabela := {"ACY","CN0","CN1","CN5","CNK","CNL","CT8","CTA","DA0","DA1","DA3","SA3","SA4",;  	  //Array com as tabelas que serão copiadas
+                     "SA6","SAH","SB1","SBM","SE4","SED","SES","SF4","SF5","SF7","SG1","SG5","SM4","SU5",;
+                     "SA2","CT1","CT5","CTS","CVN","CTN","CVE","CVF"}
 
-  	PREPARE ENVIRONMENT EMPRESA "99" FILIAL "01" TABLES "SIX","SX2","SX3" //Prepara a conexão com o dicionário de dados da empresa e filial especificada
-	    cEmpOri  := "090"
-	    If !(ExistDir(cPath))		//Rotina para verificar se o diretório existe, se não existir será criado
-			cTempPath := cPath
-			aTempPath := {}
-			
-			While AT("\",cTempPath) > 0
-				AADD(aTempPath,SUBSTR(cTempPath,1,AT("\",cTempPath)))
-				cTempPath := SUBSTR(cTempPath,AT("\",cTempPath)+1,Len(cTempPath))
-			End
-			AADD(aTempPath,cTempPath)
-			cTempPath := ""
-			
-			For i := 1 To Len(aTempPath)
+Local cEmpDest := {"130"} //Empresa(s) destino
+Local cEmpOri             //Empresa de origem
+Local nEmpInd,nTabInd
+Local nHandJob
+Private cPath := "C:\TEMP\CARGA\"  //Diretório onde os arquivos serão salvos
+
+  PREPARE ENVIRONMENT EMPRESA "99" FILIAL "01" TABLES "SIX","SX2","SX3" //Prepara a conexão com o dicionário de dados da empresa e filial especificada
+    cEmpOri  := "090"
+    If !(ExistDir(cPath))		//Rotina para verificar se o diretório existe, se não existir será criado
+		cTempPath := cPath
+		aTempPath := {}
+		
+		While AT("\",cTempPath) > 0
+			AADD(aTempPath,SUBSTR(cTempPath,1,AT("\",cTempPath)))
+			cTempPath := SUBSTR(cTempPath,AT("\",cTempPath)+1,Len(cTempPath))
+		End
+		AADD(aTempPath,cTempPath)
+		cTempPath := ""
+		
+		For i := 1 To Len(aTempPath)
+			If aTempPath[i] <> "C:\"
 				MakeDir(cTempPath+aTempPath[i])
-				cTempPath := cTempPath + aTempPath[i]
-			Next
-	    EndIf
-	    
-	    nHandJob := Fcreate(cPath + "JOB.SQL")
-	    For nEmpInd:= 1 To Len(cEmpDest)
-	          
-	        For nTabInd := 1 To Len(aLstTabela)
-	            cptbgv(aLstTabela[nTabInd],cEmpOri,cEmpDest[nEmpInd])  
-	            
-	            FWrite(nHandJob,("@C:\Temp\Carga\"+aLstTabela[nTabInd]+cEmpOri+cEmpDest[nEmpInd]) + "_query.txt"+CRLF)            
-	        Next
-	    Next
-	    FClose(nHandJob)
-	 RESET ENVIRONMENT
+			EndIf                              
+			cTempPath := cTempPath + aTempPath[i]
+		Next
+    EndIf
+    
+    nHandJob := Fcreate(cPath + "JOB.SQL")
+    For nEmpInd:= 1 To Len(cEmpDest)
+          
+        For nTabInd := 1 To Len(aLstTabela)
+            cptbgv(aLstTabela[nTabInd],cEmpOri,cEmpDest[nEmpInd])  
+            
+            FWrite(nHandJob,("@C:\Temp\Carga\"+aLstTabela[nTabInd]+cEmpOri+cEmpDest[nEmpInd]) + "_query.txt"+CRLF)            
+        Next
+    Next
+    FClose(nHandJob)
+  RESET ENVIRONMENT
     	
 Return
 //////////////////////////////////////////////////////////
